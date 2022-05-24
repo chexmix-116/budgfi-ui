@@ -1,0 +1,22 @@
+html,
+body {
+  background: linear-gradient(90deg, #E6E9F0 0%, #EEF1F5 100%);
+  padding: 0;
+  margin: 0;
+  font-family: "Lexend", BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, li, ol{
+  margin-bottom: 0px;
+  color: #232D34
+}
+
+* {
+  box-sizing: border-box;
+}
