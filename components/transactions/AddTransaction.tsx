@@ -20,21 +20,13 @@ interface Props {
 
 const AddTransaction = (props: Props) => {
     return (
-        <tr>
-            <td colSpan={4}>
-                <StyledAddTransactionButton
-                    className="my-3"
-                    onClick={props.addTransactionHandler}
-                >
-                    <Image
-                        src="/icons/plus.svg"
-                        height="24px"
-                        width="24px"
-                    ></Image>
-                    <div className="ms-2">Add New Transaction</div>
-                </StyledAddTransactionButton>
-            </td>
-        </tr>
+        <StyledAddTransactionButton
+            className="my-3"
+            onClick={props.addTransactionHandler}
+        >
+            <Image src="/icons/plus.svg" height="24px" width="24px"></Image>
+            <div className="ms-2">Add New Transaction</div>
+        </StyledAddTransactionButton>
     );
 };
 

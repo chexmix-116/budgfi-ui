@@ -1,135 +1,196 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTable } from "react-table";
 import AddTransaction from "./AddTransaction";
 import Transaction, { Category } from "./Transaction";
+import {
+    DataGrid,
+    GridRowsProp,
+    GridColDef,
+    GridColumnHeaderParams,
+    GridRenderCellParams,
+    GridRowHeightParams,
+} from "@mui/x-data-grid";
+import { formatAsCurrency, formatAsDate } from "../../lib/utilities/formatter";
 
 interface Props {
-    categories: Category[]
+    categories: Category[];
 }
 
 const TransactionTable = (props: Props) => {
-    const [isDraftActive, setIsDraftActive] = useState<boolean>(false);
+    // Flag tracks whether or not user is actively creating a new transaction
+    const [isAddingNewTransaction, setIsAddingNewTransaction] =
+        useState<boolean>(false);
 
-    const addNewTransactionHandler = (): void => {
-        setIsDraftActive(draftActive => !draftActive);
-    }
+    const [rows, setRows] = useState<GridRowsProp>([
+        {
+            id: 1,
+            col1: formatAsDate("06-16-2022"),
+            col2: "Restaurants",
+            col3: "MOD Pizza",
+            col4: formatAsCurrency(22.06),
+        },
+        {
+            id: 2,
+            col1: formatAsDate("06-16-2022"),
+            col2: "Transportation",
+            col3: "Uber Technologies",
+            col4: formatAsCurrency(54.05),
+        },
+        {
+            id: 3,
+            col1: formatAsDate("06-17-2022"),
+            col2: "Restaurants",
+            col3: "Sojuba",
+            col4: formatAsCurrency(91.06),
+        },
+        {
+            id: 4,
+            col1: formatAsDate("06-17-2022"),
+            col2: "Restaurants",
+            col3: "Charlie's Sandwich Shoppe",
+            col4: formatAsCurrency(45.07),
+        },
+        {
+            id: 5,
+            col1: formatAsDate("06-17-2022"),
+            col2: "Restaurants",
+            col3: "Jaho Coffee Roast & Wine Bar",
+            col4: formatAsCurrency(14.76),
+        },
+        {
+            id: 6,
+            col1: formatAsDate("06-15-2022"),
+            col2: "Food",
+            col3: "Uber Eats: El Jefe's",
+            col4: formatAsCurrency(29.32),
+        },
+        {
+            id: 7,
+            col1: formatAsDate("06-15-2022"),
+            col2: "Shopping",
+            col3: "Amazon: Shades",
+            col4: formatAsCurrency(14.76),
+        },
+        {
+            id: 8,
+            col1: formatAsDate("06-15-2022"),
+            col2: "Shopping",
+            col3: "Mechanical Keyboards",
+            col4: formatAsCurrency(111.58),
+        },
+    ]);
 
-    const data = React.useMemo(
-        () => [
-            {
-                date: "1/17/2021",
-                category: "Utilities",
-                description: "DTE Energy",
-                amount: 67.18,
-            },
-            {
-                date: "1/17/2021",
-                category: "Food & Drinks",
-                description: "SQ *SWEETWATERS COFFEE",
-                amount: 4.77,
-            },
-            {
-                date: "1/16/2021",
-                category: "Parking",
-                description: "CITY OF ROCHESTER",
-                amount: 2.0,
-            },
-        ],
-        []
-    );
+    useEffect(() => {
+        // If not actively adding a new transaction, present button to start adding a new one
+        if (isAddingNewTransaction === false) {
+            const emptyRow = { id: 1, col1: "Hello World", col2: "", col3: "", col4: "" };
+            const incrementedRows = rows.map((row) => {
+                return { ...row, id: row.id + 1 };
+            });
+            setRows([emptyRow, ...incrementedRows]);
+        }
+    }, [isAddingNewTransaction]);
 
-    const columns = React.useMemo(
-        () => [
-            {
-                Header: "Date",
-                accessor: "date",
-                icon: "/icons/column-descending.svg",
+    const columns: GridColDef[] = [
+        {
+            field: "col1",
+            headerClassName: "DataGrid-headerColumn",
+            headerName: "Date",
+            flex: 1,
+        
+            // Special rendering for add transaction
+            colSpan: ({ row }) => {
+                if( row.id === 1 ){
+                    return 4
+                }
+                else{
+                    return 1
+                }
             },
-            {
-                Header: "Category",
-                accessor: "category",
-                icon: "/icons/filter.svg",
+            // Special rendering for add transaction
+            renderCell: (params: GridRenderCellParams<any>) => {
+                if( params.id === 1 ){
+                    return <AddTransaction addTransactionHandler={addTransactionHandler}/>
+                }
             },
-            {
-                Header: "Description",
-                accessor: "description",
-                icon: "",
-            },
-            {
-                Header: "Amount",
-                accessor: "amount",
-                icon: "/icons/column-descending.svg",
-            },
-        ],
-        []
-    );
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <p>
+                    {params?.colDef?.headerName + " "}
+                    <span role="img" aria-label="enjoy">
+                        <img src="/icons/column-descending.svg" alt="" />
+                    </span>
+                </p>
+            ),
+        },
+        {
+            field: "col2",
+            headerClassName: "DataGrid-headerColumn",
+            headerName: "Category",
+            flex: 1,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <p>
+                    {params?.colDef?.headerName + " "}
+                    <span role="img" aria-label="enjoy">
+                        <img src="/icons/filter.svg" alt="" />
+                    </span>
+                </p>
+            ),
+        },
+        {
+            field: "col3",
+            headerClassName: "DataGrid-headerColumn",
+            headerName: "Description",
+            flex: 2,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <p>{params?.colDef?.headerName + " "}</p>
+            ),
+        },
+        {
+            field: "col4",
+            headerClassName: "DataGrid-headerColumn",
+            headerName: "Amount",
+            flex: 1,
+            renderHeader: (params: GridColumnHeaderParams) => (
+                <p>{params?.colDef?.headerName + " "}</p>
+            ),
+        },
+    ];
 
-    // @ts-ignore
-    const transactionTable = useTable({ columns, data });
-
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-        transactionTable;
+    const addTransactionHandler = () => {;}
 
     return (
-        <table {...getTableProps()} style={{ width: "100%" }}>
-            <thead>
-                {headerGroups.map((headerGroup) => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
-                        {headerGroup.headers.map((column) => (
-                            <th
-                                {...column.getHeaderProps()}
-                                style={{
-                                    borderBottom: "solid 2px #8C8C8C",
-                                    background: "transparent",
-                                    borderRadius: "10px",
-                                    paddingLeft: "16px",
-                                    color: "black",
-                                    fontWeight: "bold",
-                                    alignItems: "center",
-                                    paddingBottom: "10px",
-                                }}
-                            >
-                                <div className="d-flex">
-                                    {column.render("Header")}
-                                    <img
-                                        src={column.render("icon") as string}
-                                        alt=""
-                                        className="ms-1"
-                                    />
-                                </div>
-                            </th>
-                        ))}
-                    </tr>
-                ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-                {isDraftActive ? <Transaction isDraft={true} categories={props.categories}/> : <AddTransaction addTransactionHandler={addNewTransactionHandler}/>}
-                {rows.map((row) => {
-                    prepareRow(row);
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map((cell) => {
-                                return (
-                                    <td
-                                        {...cell.getCellProps()}
-                                        style={{
-                                            paddingTop: "10px",
-                                            paddingBottom: "10px",
-                                            paddingLeft: "16px",
-                                            borderBottom: "solid 1px #DFE7F8",
-                                            background: "transparent",
-                                        }}
-                                    >
-                                        {cell.render("Cell")}
-                                    </td>
-                                );
-                            })}
-                        </tr>
-                    );
-                })}
-            </tbody>
-        </table>
+        <div style={{ height: "50vh", width: "100%" }}>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                getRowHeight={({id}: GridRowHeightParams) => {
+                    if( id === 1 ){
+                        return 100
+                    }
+                    else{
+                        return 37;
+                    }
+                }}
+                sx={{
+                    border: "none",
+                    "& .MuiDataGrid-columnSeparator": {
+                        display: "none",
+                    },
+                    "& .MuiDataGrid-row": {
+                        ".MuiDataGrid-cellContent": {
+                            fontFamily: "Lexend",
+                            fontWeight: 300,
+                        },
+                    },
+                    "& .DataGrid-headerColumn": {
+                        fontFamily: "Lexend",
+                        fontWeight: 700,
+                        color: "#3C484B",
+                    },
+                }}
+            />
+        </div>
     );
 };
 

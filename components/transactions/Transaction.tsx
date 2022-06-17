@@ -10,8 +10,19 @@ export interface Category {
 }
 
 const TableData = styled.td`
-    background: linear-gradient(to bottom, white, white 15%, #F1F2F3 15%, #F1F2F3 85%, white 85%, white);
-    padding: 25px 16px;
+    background: #f1f2f3;
+    /* background: linear-gradient(to bottom, white, white 15%, #F1F2F3 15%, #F1F2F3 85%, white 85%, white); */
+    padding: 15px 16px;
+    &:first-child {
+        border-radius: 15px 0px 0px 15px;
+    }
+
+    &:last-child {
+        border-radius: 0px 15px 15px 0px;
+    }
+`;
+
+const TableRow = styled.tr`
 `;
 
 const InlineInput = styled.input`
@@ -28,10 +39,11 @@ interface Props {
 
 const Transaction = (props: Props) => {
     return (
-        <tr>
+        <TableRow>
             <TableData>
                 <DatePicker />
             </TableData>
+
             <TableData>
                 <Dropdown>
                     {props.categories.map(({ text, value }) => {
@@ -43,13 +55,15 @@ const Transaction = (props: Props) => {
                     })}
                 </Dropdown>
             </TableData>
+
             <TableData>
                 <InlineInput type="text" placeholder="Description" />
             </TableData>
+
             <TableData>
                 <InlineInput type="number" placeholder="Amount" />
             </TableData>
-        </tr>
+        </TableRow>
     );
 };
 

@@ -58,6 +58,7 @@ TransactionsPage.getInitialProps = async () => {
         { text: "Insurance", value: "insurance" },
         { text: "Gas/Fuel", value: "gas-fuel" },
         { text: "Maintenance", value: "maintenance" },
+        { text: "Shopping", value: "shopping"}
     ];
 
     return { categories };

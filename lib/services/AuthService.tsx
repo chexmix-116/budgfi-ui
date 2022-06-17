@@ -10,7 +10,7 @@ export interface AuthFormValues {
   password: string;
 }
 
-const BUDGFI_SERVICES_API = process.env.REACT_APP_BUDGFI_SERVICES;
+const BUDGFI_SERVICES_API = process.env.NEXT_PUBLIC_BUDGFI_SERVICES;
 
 const AuthenticationService = {
   signUp: function ({ emailAddress: username, password }: AuthFormValues) {
@@ -19,6 +19,12 @@ const AuthenticationService = {
       password,
     });
   },
+  login: function({ emailAddress: username, password }: AuthFormValues) {
+    return axios.post(`${BUDGFI_SERVICES_API}/auth/signin`, {
+      username,
+      password
+    })
+  }
 };
 
 export default AuthenticationService;

@@ -8,7 +8,7 @@ import { Button, ButtonModeEnum } from "../lib/components/Button";
 import { ErrorMessage } from "../lib/components/ErrorMessage";
 import { TextField } from "../lib/components/TextField";
 import { TextFieldWithIcon } from "../lib/components/TextFieldWithIcon";
-import { AuthFormValues, PasswordTypeEnum } from "../lib/services/AuthService";
+import authenticationService, { AuthFormValues, PasswordTypeEnum } from "../lib/services/AuthService";
 import {
     getFormErrorMessage,
     showFormErrorMessage,
@@ -59,7 +59,11 @@ export default function LoginForm() {
             password: "",
         },
         validationSchema: ErrorMessageSchema,
-        onSubmit: async (formValues: AuthFormValues) => {},
+        onSubmit: async (formValues: AuthFormValues) => {
+            const res = await authenticationService.login(formValues);
+            const data = res.data;
+            console.log("Data:", data)
+        },
     });
     return (
         <StyledForm onSubmit={loginForm.handleSubmit}>
